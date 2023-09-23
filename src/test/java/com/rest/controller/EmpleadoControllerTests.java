@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rest.model.Empleado;
 import com.rest.service.EmpleadoService;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -35,23 +36,29 @@ public class EmpleadoControllerTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+    
+    private Empleado empleado;
+    
+    @BeforeEach
+    void setup(){
+        empleado = Empleado.builder()
+        		.id(1L)
+                .nombre("Lisandro")
+                .apellido("Kruger")
+                .email("lkruger@gmail.com")
+                .build();
+    }
 
     @Test
     void testGuardarEmpleado() throws Exception {
         //given
-        Empleado empleado = Empleado.builder()
-                .id(1L)
-                .nombre("Christian")
-                .apellido("Ramirez")
-                .email("c1@gmail.com")
-                .build();
         given(empleadoService.saveEmpleado(any(Empleado.class)))
                 .willAnswer((invocation) -> invocation.getArgument(0));
 
         //when
         ResultActions response = mockMvc.perform(post("/api/empleados")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(empleado)));
+                .content(objectMapper.writeValueAsString(this.empleado)));
 
         //then
         response.andDo(print())
@@ -66,10 +73,10 @@ public class EmpleadoControllerTests {
         //given
         List<Empleado> listaEmpleados = new ArrayList<>();
         listaEmpleados.add(Empleado.builder().nombre("Christian").apellido("Ramirez").email("c1@gmail.com").build());
-        listaEmpleados.add(Empleado.builder().nombre("Gabriel").apellido("Ramirez").email("g1@gmail.com").build());
-        listaEmpleados.add(Empleado.builder().nombre("Julen").apellido("Ramirez").email("cj@gmail.com").build());
-        listaEmpleados.add(Empleado.builder().nombre("Biaggio").apellido("Ramirez").email("b1@gmail.com").build());
-        listaEmpleados.add(Empleado.builder().nombre("Adrian").apellido("Ramirez").email("a@gmail.com").build());
+        listaEmpleados.add(Empleado.builder().nombre("Gabriel").apellido("Lopez").email("g1@gmail.com").build());
+        listaEmpleados.add(Empleado.builder().nombre("Julen").apellido("Rodriguez").email("cj@gmail.com").build());
+        listaEmpleados.add(Empleado.builder().nombre("Biaggio").apellido("Ruiz").email("b1@gmail.com").build());
+        listaEmpleados.add(Empleado.builder().nombre("Adrian").apellido("Diaz").email("a@gmail.com").build());
         given(empleadoService.getAllEmpleados()).willReturn(listaEmpleados);
 
         //when
@@ -85,12 +92,7 @@ public class EmpleadoControllerTests {
     void testObtenerEmpleadoPorId() throws Exception{
         //given
         long empleadoId = 1L;
-        Empleado empleado = Empleado.builder()
-                .nombre("Christian")
-                .apellido("Ramirez")
-                .email("c1@gmail.com")
-                .build();
-        given(empleadoService.getEmpleadoById(empleadoId)).willReturn(Optional.of(empleado));
+        given(empleadoService.getEmpleadoById(empleadoId)).willReturn(Optional.of(this.empleado));
 
         //when
         ResultActions response = mockMvc.perform(get("/api/empleados/{id}",empleadoId));
@@ -107,11 +109,6 @@ public class EmpleadoControllerTests {
     void testObtenerEmpleadoNoEncontrado() throws Exception{
         //given
         long empleadoId = 1L;
-        Empleado empleado = Empleado.builder()
-                .nombre("Christian")
-                .apellido("Ramirez")
-                .email("c1@gmail.com")
-                .build();
         given(empleadoService.getEmpleadoById(empleadoId)).willReturn(Optional.empty());
 
         //when
@@ -126,19 +123,14 @@ public class EmpleadoControllerTests {
     void testActualizarEmpleado() throws Exception{
         //given
         long empleadoId = 1L;
-        Empleado empleadoGuardado = Empleado.builder()
-                .nombre("Christian")
-                .apellido("Lopez")
-                .email("c1@gmail.com")
-                .build();
 
         Empleado empleadoActualizado = Empleado.builder()
-                .nombre("Christian Raul")
+                .nombre("Daniel")
                 .apellido("Ramirez")
-                .email("c231@gmail.com")
+                .email("dramirez@gmail.com")
                 .build();
 
-        given(empleadoService.getEmpleadoById(empleadoId)).willReturn(Optional.of(empleadoGuardado));
+        given(empleadoService.getEmpleadoById(empleadoId)).willReturn(Optional.of(empleado));
         given(empleadoService.updateEmpleado(any(Empleado.class)))
                 .willAnswer((invocation) -> invocation.getArgument(0));
 
@@ -159,16 +151,11 @@ public class EmpleadoControllerTests {
     void testActualizarEmpleadoNoEncontrado() throws Exception{
         //given
         long empleadoId = 1L;
-        Empleado empleadoGuardado = Empleado.builder()
-                .nombre("Christian")
-                .apellido("Lopez")
-                .email("c1@gmail.com")
-                .build();
 
         Empleado empleadoActualizado = Empleado.builder()
                 .nombre("Christian Raul")
                 .apellido("Ramirez")
-                .email("c231@gmail.com")
+                .email("chramirez@gmail.com")
                 .build();
 
         given(empleadoService.getEmpleadoById(empleadoId)).willReturn(Optional.empty());

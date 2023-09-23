@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.rest.model.Empleado;
-import com.rest.repository.EmpleadoRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,9 +24,10 @@ public class EmpleadoRepositoryTests {
     @BeforeEach
     void setup(){
         empleado = Empleado.builder()
-                .nombre("Christian")
-                .apellido("Ramirez")
-                .email("c1@gmail.com")
+        		.id(1L)
+                .nombre("Lisandro")
+                .apellido("Kruger")
+                .email("lkruger@gmail.com")
                 .build();
     }
 
@@ -35,14 +35,9 @@ public class EmpleadoRepositoryTests {
     @Test
     void testGuardarEmpleado(){
         //given - dado o condición previa o configuración
-        Empleado empleado1 = Empleado.builder()
-                .nombre("Pepe")
-                .apellido("Lopez")
-                .email("p12@gmail.com")
-                .build();
 
         //when - acción o el comportamiento que vamos a probar
-        Empleado empleadoGuardado = empleadoRepository.save(empleado1);
+        Empleado empleadoGuardado = empleadoRepository.save(this.empleado);
 
         //then - verificar la salida
         assertThat(empleadoGuardado).isNotNull();
@@ -53,13 +48,13 @@ public class EmpleadoRepositoryTests {
     @Test
     void testListarEmpleados(){
         //given
-        Empleado empleado1 = Empleado.builder()
+        Empleado empleado2 = Empleado.builder()
                 .nombre("Julen")
                 .apellido("Oliva")
                 .email("j2@gmail.com")
                 .build();
-        empleadoRepository.save(empleado1);
-        empleadoRepository.save(empleado);
+        empleadoRepository.save(empleado2);
+        empleadoRepository.save(this.empleado);
 
         //when
         List<Empleado> listaEmpleados = empleadoRepository.findAll();
@@ -75,7 +70,7 @@ public class EmpleadoRepositoryTests {
         empleadoRepository.save(empleado);
 
         //when - comportamiento o accion que vamos a probar
-        Empleado empleadoBD = empleadoRepository.findById(empleado.getId()).get();
+        Empleado empleadoBD = empleadoRepository.findById(this.empleado.getId()).get();
 
         //then
         assertThat(empleadoBD).isNotNull();
@@ -84,28 +79,28 @@ public class EmpleadoRepositoryTests {
     @DisplayName("Test para actualizar un empleado")
     @Test
     void testActualizarEmpleado(){
-        empleadoRepository.save(empleado);
+        empleadoRepository.save(this.empleado);
 
         //when
         Empleado empleadoGuardado = empleadoRepository.findById(empleado.getId()).get();
-        empleadoGuardado.setEmail("c232@gmail.com");
-        empleadoGuardado.setNombre("Christian Raul");
-        empleadoGuardado.setApellido("Ramirez Cucitini");
+        empleadoGuardado.setEmail("jraul@gmail.com");
+        empleadoGuardado.setNombre("Jose Raul");
+        empleadoGuardado.setApellido("Lopez Cucitini");
         Empleado empleadoActualizado = empleadoRepository.save(empleadoGuardado);
 
         //then
-        assertThat(empleadoActualizado.getEmail()).isEqualTo("c232@gmail.com");
-        assertThat(empleadoActualizado.getNombre()).isEqualTo("Christian Raul");
+        assertThat(empleadoActualizado.getEmail()).isEqualTo("jraul@gmail.com");
+        assertThat(empleadoActualizado.getNombre()).isEqualTo("Jose Raul");
     }
 
     @DisplayName("Test para eliminar un empleado")
     @Test
     void testEliminarEmpleado(){
-        empleadoRepository.save(empleado);
+        empleadoRepository.save(this.empleado);
 
         //when
-        empleadoRepository.deleteById(empleado.getId());
-        Optional<Empleado> empleadoOptional = empleadoRepository.findById(empleado.getId());
+        empleadoRepository.deleteById(this.empleado.getId());
+        Optional<Empleado> empleadoOptional = empleadoRepository.findById(this.empleado.getId());
 
         //then
         assertThat(empleadoOptional).isEmpty();

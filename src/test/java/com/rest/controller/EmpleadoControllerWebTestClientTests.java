@@ -19,22 +19,28 @@ public class EmpleadoControllerWebTestClientTests {
 
     @Autowired
     private WebTestClient webTestClient;
-
+    
+private Empleado empleado;
+    
+    @BeforeEach
+    void setup(){
+    	//given
+        empleado = Empleado.builder()
+        		.id(1L)
+                .nombre("Lisandro")
+                .apellido("Kruger")
+                .email("lkruger@gmail.com")
+                .build();
+    }
+    
     @Test
     @Order(1)
     void testGuardarEmpleado(){
-        //given
-        Empleado empleado = Empleado.builder()
-                .id(3l)
-                .nombre("Adrian")
-                .apellido("Ramirez")
-                .email("aab@gmail.com")
-                .build();
 
         //when
         webTestClient.post().uri("http://localhost:8080/api/empleados")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(empleado)
+                .bodyValue(this.empleado)
                 .exchange() //envia el request
 
         //then
@@ -55,9 +61,9 @@ public class EmpleadoControllerWebTestClientTests {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                 .jsonPath("$.id").isEqualTo(3)
-                .jsonPath("$.nombre").isEqualTo("Adrian")
-                .jsonPath("$.apellido").isEqualTo("Ramirez")
-                .jsonPath("$.email").isEqualTo("aab@gmail.com");;
+                .jsonPath("$.nombre").isEqualTo("Lisandro")
+                .jsonPath("$.apellido").isEqualTo("Kruger")
+                .jsonPath("$.email").isEqualTo("lkruger@gmail.com");;
     }
 
     @Test
@@ -67,9 +73,9 @@ public class EmpleadoControllerWebTestClientTests {
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                .jsonPath("$[1].nombre").isEqualTo("Adrian")
-                .jsonPath("$[1].apellido").isEqualTo("Ramirez")
-                .jsonPath("$[1].email").isEqualTo("aab@gmail.com")
+                .jsonPath("$[1].nombre").isEqualTo("Lisandro")
+                .jsonPath("$[1].apellido").isEqualTo("Kruger")
+                .jsonPath("$[1].email").isEqualTo("lkruger@gmail.com")
                 .jsonPath("$").isArray()
                 .jsonPath("$").value(hasSize(2));
     }

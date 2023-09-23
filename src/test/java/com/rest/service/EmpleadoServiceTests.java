@@ -39,9 +39,9 @@ public class EmpleadoServiceTests {
     void setup(){
         empleado = Empleado.builder()
                 .id(1L)
-                .nombre("Christian")
-                .apellido("Ramirez")
-                .email("c1@gmail.com")
+                .nombre("Lisandro")
+                .apellido("Kruger")
+                .email("lkruger@gmail.com")
                 .build();
     }
 
@@ -79,13 +79,13 @@ public class EmpleadoServiceTests {
     @Test
     void testListarEmpleados(){
         //given
-        Empleado empleado1 = Empleado.builder()
+        Empleado empleado2 = Empleado.builder()
                 .id(2L)
                 .nombre("Julen")
                 .apellido("Oliva")
                 .email("j2@gmail.com")
                 .build();
-        given(empleadoRepository.findAll()).willReturn(List.of(empleado,empleado1));
+        given(empleadoRepository.findAll()).willReturn(List.of(empleado,empleado2));
 
         //when
         List<Empleado> empleados = empleadoService.getAllEmpleados();
@@ -99,12 +99,6 @@ public class EmpleadoServiceTests {
     @Test
     void testListarColeccionEmpleadosVacia(){
         //given
-        Empleado empleado1 = Empleado.builder()
-                .id(1L)
-                .nombre("Julen")
-                .apellido("Oliva")
-                .email("j2@gmail.com")
-                .build();
         given(empleadoRepository.findAll()).willReturn(Collections.emptyList());
 
         //when
@@ -133,15 +127,15 @@ public class EmpleadoServiceTests {
     void testActualizarEmpleado(){
         //given
         given(empleadoRepository.save(empleado)).willReturn(empleado);
-        empleado.setEmail("chr2@gmail.com");
-        empleado.setNombre("Christian Raul");
+        empleado.setEmail("jraul@gmail.com");
+        empleado.setNombre("Jose Raul");
 
         //when
         Empleado empleadoActualizado  = empleadoService.updateEmpleado(empleado);
 
         //then
-        assertThat(empleadoActualizado.getEmail()).isEqualTo("chr2@gmail.com");
-        assertThat(empleadoActualizado.getNombre()).isEqualTo("Christian Raul");
+        assertThat(empleadoActualizado.getEmail()).isEqualTo("jraul@gmail.com");
+        assertThat(empleadoActualizado.getNombre()).isEqualTo("Jose Raul");
     }
 
     @DisplayName("Test para eliminar un empleado")

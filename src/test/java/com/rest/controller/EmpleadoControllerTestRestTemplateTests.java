@@ -1,5 +1,6 @@
 package com.rest.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -30,17 +31,24 @@ public class EmpleadoControllerTestRestTemplateTests {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
+    
+    private Empleado empleado;
+    
+    @BeforeEach
+    void setup(){
+        empleado = Empleado.builder()
+        		.id(1L)
+                .nombre("Lisandro")
+                .apellido("Kruger")
+                .email("lkruger@gmail.com")
+                .build();
+    }
 
     @Test
     @Order(1)
     void testGuardarEmpleado(){
-        Empleado empleado = Empleado.builder()
-                .id(1L)
-                .nombre("Christian")
-                .apellido("Ramirez")
-                .email("c1@gmail.com")
-                .build();
-        ResponseEntity<Empleado> respuesta = testRestTemplate.postForEntity("http://localhost:8080/api/empleados",empleado,Empleado.class);
+        
+        ResponseEntity<Empleado> respuesta = testRestTemplate.postForEntity("http://localhost:8080/api/empleados",this.empleado,Empleado.class);
         assertEquals(HttpStatus.CREATED,respuesta.getStatusCode());
         assertEquals(MediaType.APPLICATION_JSON,respuesta.getHeaders().getContentType());
 
@@ -48,9 +56,9 @@ public class EmpleadoControllerTestRestTemplateTests {
         assertNotNull(empleadoCreado);
 
         assertEquals(1L,empleadoCreado.getId());
-        assertEquals("Christian",empleadoCreado.getNombre());
-        assertEquals("Ramirez",empleado.getApellido());
-        assertEquals("c1@gmail.com",empleadoCreado.getEmail());
+        assertEquals("Jose",empleadoCreado.getNombre());
+        assertEquals("Lopez",empleado.getApellido());
+        assertEquals("jlopez.com",empleadoCreado.getEmail());
     }
 
     @Test
@@ -64,9 +72,9 @@ public class EmpleadoControllerTestRestTemplateTests {
 
         assertEquals(1,empleados.size());
         assertEquals(1L,empleados.get(0).getId());
-        assertEquals("Christian",empleados.get(0).getNombre());
-        assertEquals("Ramirez",empleados.get(0).getApellido());
-        assertEquals("c1@gmail.com",empleados.get(0).getEmail());
+        assertEquals("Lisandro",empleados.get(0).getNombre());
+        assertEquals("Kruger",empleados.get(0).getApellido());
+        assertEquals("lkruger@gmail.com",empleados.get(0).getEmail());
     }
 
     @Test
@@ -80,9 +88,9 @@ public class EmpleadoControllerTestRestTemplateTests {
 
         assertNotNull(empleado);
         assertEquals(1L,empleado.getId());
-        assertEquals("Christian",empleado.getNombre());
-        assertEquals("Ramirez",empleado.getApellido());
-        assertEquals("c1@gmail.com",empleado.getEmail());
+        assertEquals("Lisandro",empleado.getNombre());
+        assertEquals("Kruger",empleado.getApellido());
+        assertEquals("lkruger@gmail.com",empleado.getEmail());
     }
 
     @Test
